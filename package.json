@@ -1,0 +1,24 @@
+{
+  "name": "restitute",
+  "description": "A nodejs controller libraray to create a JSON REST service",
+  "version": "0.0.1",
+  "main": "src/index.js",
+  "private": false,
+  "scripts": {
+	"test": "jasmine-node spec/"
+  },
+  "repository" : {
+    "type": "git",
+    "url": "https://github.com/polo2ro/restitute.git"
+  },
+  "dependencies": {
+      "q": "~1.0.1",
+      "node-paginate-anything": "~0.0.5"
+  },
+  "devDependencies": {
+    "jasmine-node": "~1.14.3"
+  },
+  "engine": {
+    "node": ">=0.6"
+  }
+}
