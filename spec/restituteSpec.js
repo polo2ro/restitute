@@ -6,25 +6,55 @@ var sampleController = require('./sampleController');
 
 
 
+var app = function(req, res) {
 
-var server = http.createServer(function(req, res) {
-
+    req.app = app;
 	var path = url.parse(req.url).pathname;
+
+
+    function forwardToController(controller)
+    {
+
+        if (path === controller.path) {
+            // this is the matching route
+
+            controller.onRequest(req, res).then(function() {
+                req.connection.destroy();
+            });
+
+            return true;
+        }
+
+        return false;
+    }
+
 
     // search matching route
 
     for(var method in sampleController) {
 
-        var controller = sampleController[method]();
-        if (path === controller.path) {
-            // this is the matching route
+        var controller = new sampleController[method]();
 
-            controller.onRequest(req, res);
+        if (forwardToController(controller)) {
+            return;
         }
     }
 
-	req.connection.destroy();
-});
+
+    res.statusCode = 404;
+    res.end('No matching query');
+    req.connection.destroy();
+};
+
+
+app.getService = function(path) {
+    var apiservice = require('../src/service');
+    var serviceLoader = require('./services/'+path);
+    return serviceLoader(apiservice, app);
+};
+
+
+var server = http.createServer(app);
 server.listen(3000);
 
 

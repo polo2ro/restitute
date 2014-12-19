@@ -52,15 +52,7 @@ function apiService() {
      * @param {Object} app
      */
     this.setApp = function(app) {
-        /**
-         * Shortcut for gettext utility
-         */
-        this.gt = app.utility.gettext;
 
-        /**
-         * Shortcut for db models
-         */
-        this.models = app.db.models;
     }
 
     /**
@@ -339,9 +331,24 @@ deleteItemService.prototype = new apiService();
 
 
 
+/**
+ * Load a service object
+ * @param {express|Object} app      Express app or headless app
+ * @param {String} path
+ *
+ * @return {apiService}
+ */
+function loader(app, path) {
+    return app.getService(path);
+}
+
+
+
+
 exports = module.exports = {
     list: listItemsService,
     get: getItemService,
     save: saveItemService,
-    delete: deleteItemService
+    delete: deleteItemService,
+    load: loader
 };

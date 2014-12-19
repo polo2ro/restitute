@@ -6,7 +6,13 @@ function listTestController() {
     restitute.controller.list.call(this, '/rest/listTestController');
 
     this.controllerAction = function() {
-        this.jsonService(this.service('services/list'));
+        return this.jsonService(this.service('list'));
     };
 }
 listTestController.prototype = new restitute.controller.list();
+
+
+
+exports = module.exports = {
+    list: listTestController
+};

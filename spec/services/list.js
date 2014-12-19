@@ -12,7 +12,7 @@ exports = module.exports = function(services, app) {
      */
     service.call = function(params, paginate) {
 
-        service.deferred.resolve([]);
+        service.deferred.resolve(['TEST']);
 
         return service.deferred.promise;
     };

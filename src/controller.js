@@ -29,8 +29,13 @@ function restController(method, path) {
      *
      * @param {Request} req
      * @param {Response} res
+     *
+     * @return {Promise}
      */
     this.onRequest = function(req, res) {
+
+        var Q = require('q');
+
         ctrl.req = req;
         ctrl.res = res;
 
@@ -47,7 +52,9 @@ function restController(method, path) {
              * and the return false to cancel the controller defaut action
              */
             if (!req.app.checkPathOnRequest(ctrl)) {
-                return;
+                return Q.fcall(function () {
+                    throw new Error("Access denied");
+                });
             }
         }
 
@@ -66,7 +73,7 @@ function restController(method, path) {
             return srv;
         };
 
-        ctrl.controllerAction();
+        return ctrl.controllerAction();
     };
 
 
@@ -177,17 +184,26 @@ function listItemsController(path) {
      * This default method is paginated
      *
      * @param {apiService} service
+     *
+     * @return {Promise}
      */
     this.jsonService = function(service) {
 
+        //var deferred = require('q').defer();
         var params = ctrl.getServiceParameters(ctrl.req.query);
 
-        service.call(params, ctrl.paginate).then(function(docs) {
-            ctrl.res.status(service.httpstatus).json(docs);
+        var promise = service.call(params, ctrl.paginate);
+
+        promise.then(function(docs) {
+            ctrl.res.statusCode = service.httpstatus;
+            ctrl.res.end(JSON.stringify(docs));
 
         }).catch(function(err) {
-            ctrl.res.status(service.httpstatus).json({ $outcome: service.outcome });
+            ctrl.res.statusCode = service.httpstatus;
+            ctrl.res.end(JSON.stringify({ $outcome: service.outcome }));
         });
+
+        return promise;
     };
 }
 
@@ -210,17 +226,25 @@ function getItemController(path) {
      * Output the document with the $outcome property
      *
      * @param {apiService} service
+     *
+     * @return {Promise}
      */
     this.jsonService = function(service) {
 
         var params = ctrl.getServiceParameters(ctrl.req.params);
 
-        service.call(params).then(function(document) {
-            ctrl.res.status(service.httpstatus).json(document);
+        var promise = service.call(params);
+
+        promise.then(function(document) {
+            ctrl.res.statusCode = service.httpstatus;
+            ctrl.res.end(JSON.stringify(document));
 
         }).catch(function(err) {
-            ctrl.res.status(service.httpstatus).json({ $outcome: service.outcome });
+            ctrl.res.statusCode = service.httpstatus;
+            ctrl.res.end(JSON.stringify({ $outcome: service.outcome }));
         });
+
+        return promise;
     };
 }
 
@@ -246,6 +270,8 @@ function saveItemController(method, path) {
      *
      * @param {apiService} service
      * @param {object} [moreparams] optional additional parameters to give to the service
+     *
+     * @return {Promise}
      */
     this.jsonService = function(service, moreparams) {
 
@@ -261,12 +287,18 @@ function saveItemController(method, path) {
             params = require('connect.utils').merge(params, moreparams);
         }
 
-        service.call(params).then(function(document) {
-            ctrl.res.status(service.httpstatus).json(document);
+        var promise = service.call(params);
+
+        promise.then(function(document) {
+            ctrl.res.statusCode = service.httpstatus;
+            ctrl.res.end(JSON.stringify(document));
 
         }).catch(function(err) {
-            ctrl.res.status(service.httpstatus).json({ $outcome: service.outcome });
+            ctrl.res.statusCode = service.httpstatus;
+            ctrl.res.end(JSON.stringify({ $outcome: service.outcome }));
         });
+
+        return promise;
     };
 }
 
@@ -317,17 +349,25 @@ function deleteItemController(path) {
      * Output the deleted document with the $outcome property
      *
      * @param {apiService} service
+     *
+     * @return {Promise}
      */
     this.jsonService = function(service) {
 
         var params = ctrl.getServiceParameters(ctrl.req.params);
 
-        service.call(params).then(function(document) {
-            ctrl.res.status(service.httpstatus).json(document);
+        var promise = service.call(params);
+
+        promise.then(function(document) {
+            ctrl.res.statusCode = service.httpstatus;
+            ctrl.res.end(JSON.stringify(document));
 
         }).catch(function(err) {
-            ctrl.res.status(service.httpstatus).json({ $outcome: service.outcome });
+            ctrl.res.statusCode = service.httpstatus;
+            ctrl.res.end(JSON.stringify({ $outcome: service.outcome }));
         });
+
+        return promise;
     };
 }
 
