@@ -67,7 +67,37 @@ describe('restitute', function RestituteTestSuite() {
 	it('receive an array from a list controller', function (done){
 		http.get('http://localhost:3000/rest/listTestController', function(response) {
 			expect(response.statusCode).toBe(200);
-			done();
+
+
+            response.setEncoding('utf8');
+            response.on('data', function (chunk) {
+                var json = JSON.parse(chunk);
+                expect(json.length).toBe(1);
+                expect(json[0].name).toBe('TEST');
+            });
+
+            response.on('end', function() {
+                done();
+            });
+		});
+	});
+
+
+
+    it('receive an object from a get controller', function (done){
+		http.get('http://localhost:3000/rest/getTestController', function(response) {
+			expect(response.statusCode).toBe(200);
+
+
+            response.setEncoding('utf8');
+            response.on('data', function (chunk) {
+                var json = JSON.parse(chunk);
+                expect(json.name).toBe('TEST');
+            });
+
+            response.on('end', function() {
+                done();
+            });
 		});
 	});
 
