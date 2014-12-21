@@ -23,7 +23,34 @@ function getTestController() {
 getTestController.prototype = new restitute.controller.get();
 
 
+
+
+function deleteTestController() {
+    restitute.controller.get.call(this, '/rest/deleteTestController');
+
+    this.controllerAction = function() {
+        return this.jsonService(this.service('delete'));
+    };
+}
+deleteTestController.prototype = new restitute.controller.get();
+
+
+
+
+function saveTestController() {
+    restitute.controller.get.call(this, '/rest/saveTestController');
+
+    this.controllerAction = function() {
+        return this.jsonService(this.service('save'));
+    };
+}
+saveTestController.prototype = new restitute.controller.get();
+
+
+
 exports = module.exports = {
     list: listTestController,
-    get: getTestController
+    get: getTestController,
+    delete: deleteTestController,
+    save: saveTestController
 };

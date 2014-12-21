@@ -42,7 +42,7 @@ var app = function(req, res) {
 
 
     res.statusCode = 404;
-    res.end('No matching query');
+    res.end(JSON.stringify({ message: 'No matching query' }));
     req.connection.destroy();
 };
 
@@ -86,6 +86,44 @@ describe('restitute', function RestituteTestSuite() {
 
     it('receive an object from a get controller', function (done){
 		http.get('http://localhost:3000/rest/getTestController', function(response) {
+			expect(response.statusCode).toBe(200);
+
+
+            response.setEncoding('utf8');
+            response.on('data', function (chunk) {
+                var json = JSON.parse(chunk);
+                expect(json.name).toBe('TEST');
+            });
+
+            response.on('end', function() {
+                done();
+            });
+		});
+	});
+    
+    
+    
+    it('receive an object from a delete controller', function (done){
+		http.get('http://localhost:3000/rest/deleteTestController', function(response) {
+			expect(response.statusCode).toBe(200);
+
+
+            response.setEncoding('utf8');
+            response.on('data', function (chunk) {
+                var json = JSON.parse(chunk);
+                expect(json.name).toBe('TEST');
+            });
+
+            response.on('end', function() {
+                done();
+            });
+		});
+	});
+    
+    
+    
+    it('receive an object from a save controller', function (done){
+		http.get('http://localhost:3000/rest/saveTestController', function(response) {
 			expect(response.statusCode).toBe(200);
 
 
