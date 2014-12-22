@@ -65,7 +65,7 @@ server.listen(3000);
 describe('restitute', function RestituteTestSuite() {
 
 	it('receive an array from a list controller', function (done){
-		http.get('http://localhost:3000/rest/listTestController', function(response) {
+		http.get('http://localhost:3000/rest/listTestController?readonly=2&modifiable=1', function(response) {
 			expect(response.statusCode).toBe(200);
 
 
@@ -74,6 +74,7 @@ describe('restitute', function RestituteTestSuite() {
                 var json = JSON.parse(chunk);
                 expect(json.length).toBe(1);
                 expect(json[0].name).toBe('TEST');
+                expect(json.readonly).toBe('2');
             });
 
             response.on('end', function() {
@@ -85,7 +86,7 @@ describe('restitute', function RestituteTestSuite() {
 
 
     it('receive an object from a get controller', function (done){
-		http.get('http://localhost:3000/rest/getTestController', function(response) {
+		http.get('http://localhost:3000/rest/getTestController?readonly=2&modifiable=1', function(response) {
 			expect(response.statusCode).toBe(200);
 
 
@@ -93,6 +94,7 @@ describe('restitute', function RestituteTestSuite() {
             response.on('data', function (chunk) {
                 var json = JSON.parse(chunk);
                 expect(json.name).toBe('TEST');
+                expect(json.readonly).toBe('2');
             });
 
             response.on('end', function() {
@@ -106,7 +108,11 @@ describe('restitute', function RestituteTestSuite() {
     
     
     it('receive an object from a delete controller', function (done){
-		http.get('http://localhost:3000/rest/deleteTestController', function(response) {
+		var req = http.request({
+                host: 'localhost',
+                port: 3000,
+                path: '/rest/deleteTestController',
+                method: 'DELETE' }, function(response) {
 			expect(response.statusCode).toBe(200);
 
 
@@ -114,12 +120,16 @@ describe('restitute', function RestituteTestSuite() {
             response.on('data', function (chunk) {
                 var json = JSON.parse(chunk);
                 expect(json.name).toBe('TEST');
+                expect(json.readonly).toBe('2');
             });
 
             response.on('end', function() {
                 done();
             });
 		});
+
+        req.write('{ readonly: 2, modifiable: 1 }\n');
+        req.end();
 	});
     
     
@@ -130,7 +140,7 @@ describe('restitute', function RestituteTestSuite() {
                 host: 'localhost',
                 port: 3000,
                 path: '/rest/saveTestController',
-                method: 'PUT' }, function(response) {
+                method: method }, function(response) {
 			expect(response.statusCode).toBe(200);
 
 
@@ -138,12 +148,13 @@ describe('restitute', function RestituteTestSuite() {
             response.on('data', function (chunk) {
                 var json = JSON.parse(chunk);
                 expect(json.name).toBe('TEST');
+                expect(json.readonly).toBe('2');
             });
 
             response.on('end', next);
 		});
 
-        req.write('data\n');
+        req.write('{ readonly: 2, modifiable: 1 }\n');
         req.end();
     }
 
