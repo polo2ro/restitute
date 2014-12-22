@@ -101,6 +101,8 @@ describe('restitute', function RestituteTestSuite() {
 		});
 	});
     
+
+
     
     
     it('receive an object from a delete controller', function (done){
@@ -122,8 +124,13 @@ describe('restitute', function RestituteTestSuite() {
     
     
     
-    it('receive an object from a save controller', function (done){
-		http.get('http://localhost:3000/rest/saveTestController', function(response) {
+
+    function saveTest(method, next) {
+        var req = http.request({
+                host: 'localhost',
+                port: 3000,
+                path: '/rest/saveTestController',
+                method: 'PUT' }, function(response) {
 			expect(response.statusCode).toBe(200);
 
 
@@ -133,10 +140,22 @@ describe('restitute', function RestituteTestSuite() {
                 expect(json.name).toBe('TEST');
             });
 
-            response.on('end', function() {
-                done();
-            });
+            response.on('end', next);
 		});
+
+        req.write('data\n');
+        req.end();
+    }
+
+
+
+    it('receive an object from a save controller via PUT (edit)', function (done){
+		saveTest('PUT', done);
+	});
+
+
+    it('receive an object from a save controller via POST (create)', function (done){
+		saveTest('POST', done);
 	});
 
 

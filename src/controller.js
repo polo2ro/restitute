@@ -82,11 +82,16 @@ function restController(method, path) {
      * Return on object with parameters to give to the service
      * this method merge the client parameters and the forced server parameters
      *
-     * @param {object} queryParams client input
+     * @param {Request} request
      *
      * @return {object}
      */
-    this.getServiceParameters = function(queryParams) {
+    this.getServiceParameters = function(request) {
+
+        var url = require('url');
+        var url_parts = url.parse(request.url, true);
+        var queryParams = url_parts.query;
+
         var params = queryParams;
 
         for(var name in this.forcedParameters) {
@@ -189,8 +194,7 @@ function listItemsController(path) {
      */
     this.jsonService = function(service) {
 
-        //var deferred = require('q').defer();
-        var params = ctrl.getServiceParameters(ctrl.req.query);
+        var params = ctrl.getServiceParameters(ctrl.req);
 
         var promise = service.call(params, ctrl.paginate);
 
@@ -231,7 +235,7 @@ function getItemController(path) {
      */
     this.jsonService = function(service) {
 
-        var params = ctrl.getServiceParameters(ctrl.req.params);
+        var params = ctrl.getServiceParameters(ctrl.req);
 
         var promise = service.call(params);
 
@@ -275,7 +279,7 @@ function saveItemController(method, path) {
      */
     this.jsonService = function(service, moreparams) {
 
-        var params = ctrl.getServiceParameters(ctrl.req.body);
+        var params = ctrl.getServiceParameters(ctrl.req);
 
 
         // for ID in parameters if given by route
@@ -354,7 +358,7 @@ function deleteItemController(path) {
      */
     this.jsonService = function(service) {
 
-        var params = ctrl.getServiceParameters(ctrl.req.params);
+        var params = ctrl.getServiceParameters(ctrl.req);
 
         var promise = service.call(params);
 

@@ -11,7 +11,7 @@ exports = module.exports = function(services, app) {
      */
     service.call = function(params) {
 
-        service.resolveSuccess({ name: 'TEST' }, 'Deleted');
+        service.resolveSuccess({ name: 'TEST', readonly: params.readonly||null }, 'Deleted');
 
         return service.deferred.promise;
     };
