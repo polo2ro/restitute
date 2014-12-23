@@ -35,9 +35,16 @@ function restController(method, path) {
     this.onRequest = function(req, res) {
 
         var Q = require('q');
+        var deferred = Q.defer();
 
         ctrl.req = req;
         ctrl.res = res;
+
+        ctrl.req.restituteData = '';
+
+        req.on('data', function(chunk) {
+            ctrl.req.restituteData += chunk.toString();
+        })
 
         var workflow = require('./workflow');
         ctrl.workflow = workflow(req, res);
@@ -73,9 +80,13 @@ function restController(method, path) {
             return srv;
         };
 
-        return ctrl.controllerAction();
-    };
 
+        req.on('end', function() {
+            deferred.resolve(ctrl.controllerAction());
+        });
+
+        return deferred.promise;
+    };
 
 
     /**
@@ -84,7 +95,7 @@ function restController(method, path) {
      *
      * @param {Request} request
      *
-     * @return {object}
+     * @return {Promise}
      */
     this.getServiceParameters = function(request) {
 
@@ -93,6 +104,17 @@ function restController(method, path) {
         var queryParams = url_parts.query;
 
         var params = queryParams;
+
+        if (request.restituteData) {
+            var body = JSON.parse(request.restituteData);
+            if (body) {
+                for(var name in body) {
+                    if (body.hasOwnProperty(name)) {
+                        params[name] = body[name];
+                    }
+                }
+            }
+        }
 
         for(var name in this.forcedParameters) {
             if (queryParams.hasOwnProperty(name)) {

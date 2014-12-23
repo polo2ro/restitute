@@ -74,7 +74,7 @@ describe('restitute', function RestituteTestSuite() {
                 var json = JSON.parse(chunk);
                 expect(json.length).toBe(1);
                 expect(json[0].name).toBe('TEST');
-                expect(json.readonly).toBe('2');
+                expect(json[0].readonly).toBe('2');
             });
 
             response.on('end', function() {
@@ -106,67 +106,62 @@ describe('restitute', function RestituteTestSuite() {
 
 
     
-    
-    it('receive an object from a delete controller', function (done){
-		var req = http.request({
-                host: 'localhost',
-                port: 3000,
-                path: '/rest/deleteTestController',
-                method: 'DELETE' }, function(response) {
-			expect(response.statusCode).toBe(200);
 
-
-            response.setEncoding('utf8');
-            response.on('data', function (chunk) {
-                var json = JSON.parse(chunk);
-                expect(json.name).toBe('TEST');
-                expect(json.readonly).toBe('2');
-            });
-
-            response.on('end', function() {
-                done();
-            });
-		});
-
-        req.write('{ readonly: 2, modifiable: 1 }\n');
-        req.end();
-	});
-    
-    
     
 
-    function saveTest(method, next) {
+    function submitTest(method, path, next) {
+
+        var input = JSON.stringify({ readonly: '2', modifiable: '1' });
+        var output = '';
+
+
         var req = http.request({
                 host: 'localhost',
                 port: 3000,
-                path: '/rest/saveTestController',
-                method: method }, function(response) {
+                path: path,
+                method: method,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Length': input.length
+                }}, function(response) {
 			expect(response.statusCode).toBe(200);
 
 
             response.setEncoding('utf8');
             response.on('data', function (chunk) {
-                var json = JSON.parse(chunk);
+                output += chunk;
+
+            });
+
+            response.on('end', function() {
+
+                var json = JSON.parse(output);
                 expect(json.name).toBe('TEST');
                 expect(json.readonly).toBe('2');
+
+                next();
             });
 
             response.on('end', next);
 		});
 
-        req.write('{ readonly: 2, modifiable: 1 }\n');
+        req.write(input);
         req.end();
     }
 
 
+    it('receive an object from a delete controller', function (done){
+        submitTest('DELETE', '/rest/deleteTestController', done);
+    });
+
 
     it('receive an object from a save controller via PUT (edit)', function (done){
-		saveTest('PUT', done);
+		submitTest('PUT', '/rest/saveTestController', done);
 	});
 
 
     it('receive an object from a save controller via POST (create)', function (done){
-		saveTest('POST', done);
+		submitTest('POST', '/rest/saveTestController', done);
 	});
 
 
