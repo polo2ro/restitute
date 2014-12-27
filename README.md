@@ -28,6 +28,40 @@ Services should be created one file per service with this kind of folder structu
 Where "users" and "articles" are services names. each file contain a class inherrited from one of the base classes
 
 
+Methods
+-------
+
+Methods to use within a service
+
+**apiService.forbidden(message)**
+
+set httpstatus and outcome object
+resolve the service promise with the outcome object
+
+**apiService.notFound(message)**
+
+set httpstatus and outcome object
+resolve the service promise with the outcome object
+
+**apiService.success(message)**
+
+set httpstatus and outcome object
+resolve the service promise with the outcome object
+
+**apiService.resolveSuccess(document, message)**
+
+resolve the service promise with the document parameter in the document property og the outcome object. 
+the message will be set as a success message in the outcome object.
+
+**apiService.handleMongoError(err)**
+
+this method accept a mongoose error as parameter, the error message will be converted to the outcome object format
+
+**apiService.hasErrors()**
+
+test if the service contain errors in the outcome object
+
+
 restitute.service.list
 ----------------------
 
@@ -51,11 +85,11 @@ service.deferred is the deferred object from the Q class, it can be resolved or 
 
 Other methods from the restitute.service.list object :
 
-**mongOutcome**
+**listItemsService.mongOutcome**
 
 Can be used a callback in a mongoose query, forward mongoose errors to service error, resolve the list of documents to the service promise on success
 
-**resolveQuery**
+**listItemsService.resolveQuery**
 
 Resolve a mongoose query to a paginated result into the service promise.
 
@@ -104,7 +138,36 @@ Exemple with the delete.js file of the "articles" service :
 Controllers
 ===========
 
-Controllers classes :
+Methods
+-------
+
+Methods to use within a controller
+
+**restController.onRequest(req, res)**
+
+Method called when the controller route path is fired by the app
+
+
+**restController.accessDenied(message)**
+
+Output a 401 access denied error
+
+
+**restController.notFound(message)**
+
+Output a 404 not found error
+
+
+**restController.service(path, forceParams)**
+
+Get a service object from path, the forceParams object can be used to force parameters into the service for security reasons.
+2 controllers can use the same service with differents forceParams value. One controller can be restrained to a subset of the service resultset
+
+
+**restController.jsonService(service)**
+
+Output the result of a service in JSON format
+
 
 restitute.controller.list
 -------------------------
