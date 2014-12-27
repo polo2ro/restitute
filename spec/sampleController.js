@@ -57,7 +57,7 @@ function listParamTestController() {
     restitute.controller.list.call(this, '/rest/listParamTestController');
 
     this.controllerAction = function() {
-        return this.jsonService(this.service('list'), { readonly: 1 });
+        return this.jsonService(this.service('list', { readonly: 1 }));
     };
 }
 listParamTestController.prototype = new restitute.controller.list();
@@ -68,7 +68,7 @@ function getParamTestController() {
     restitute.controller.get.call(this, '/rest/getParamTestController');
 
     this.controllerAction = function() {
-        return this.jsonService(this.service('get'), { readonly: 1 });
+        return this.jsonService(this.service('get', { readonly: 1 }));
     };
 }
 getParamTestController.prototype = new restitute.controller.get();
@@ -80,7 +80,7 @@ function deleteParamTestController() {
     restitute.controller.get.call(this, '/rest/deleteParamTestController');
 
     this.controllerAction = function() {
-        return this.jsonService(this.service('delete'), { readonly: 1 });
+        return this.jsonService(this.service('delete', { readonly: 1 }));
     };
 }
 deleteParamTestController.prototype = new restitute.controller.get();
@@ -92,7 +92,7 @@ function saveParamTestController() {
     restitute.controller.get.call(this, '/rest/saveParamTestController');
 
     this.controllerAction = function() {
-        return this.jsonService(this.service('save'), { readonly: 1 });
+        return this.jsonService(this.service('save', { readonly: 1 }));
     };
 }
 saveParamTestController.prototype = new restitute.controller.get();
@@ -108,5 +108,10 @@ exports = module.exports = {
     list: listTestController,
     get: getTestController,
     delete: deleteTestController,
-    save: saveTestController
+    save: saveTestController,
+
+    listParam: listParamTestController,
+    getParam: getParamTestController,
+    deleteParam: deleteParamTestController,
+    saveParam: saveParamTestController
 };

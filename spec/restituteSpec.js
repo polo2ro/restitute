@@ -64,52 +64,37 @@ server.listen(3000);
 
 describe('restitute', function RestituteTestSuite() {
 
-	it('receive an array from a list controller', function (done){
-		http.get('http://localhost:3000/rest/listTestController?readonly=2&modifiable=1', function(response) {
+
+
+
+
+    function retrieveTest(path, next)
+    {
+        http.get('http://localhost:3000'+path+'?readonly=2&modifiable=1', function(response) {
 			expect(response.statusCode).toBe(200);
 
+            var output = '';
 
             response.setEncoding('utf8');
             response.on('data', function (chunk) {
-                var json = JSON.parse(chunk);
-                expect(json.length).toBe(1);
-                expect(json[0].name).toBe('TEST');
-                expect(json[0].readonly).toBe('2');
+
+                output += chunk;
+
+
             });
 
             response.on('end', function() {
-                done();
+
+                var json = JSON.parse(output);
+                next(json);
             });
 		});
-	});
-
-
-
-    it('receive an object from a get controller', function (done){
-		http.get('http://localhost:3000/rest/getTestController?readonly=2&modifiable=1', function(response) {
-			expect(response.statusCode).toBe(200);
-
-
-            response.setEncoding('utf8');
-            response.on('data', function (chunk) {
-                var json = JSON.parse(chunk);
-                expect(json.name).toBe('TEST');
-                expect(json.readonly).toBe('2');
-            });
-
-            response.on('end', function() {
-                done();
-            });
-		});
-	});
-    
-
+    }
 
     
 
-    
-
-    function submitTest(method, path, next) {
+    function submitTest(method, path, expectedReadonlyParam, next)
+    {
 
         var input = JSON.stringify({ readonly: '2', modifiable: '1' });
         var output = '';
@@ -137,12 +122,10 @@ describe('restitute', function RestituteTestSuite() {
 
                 var json = JSON.parse(output);
                 expect(json.name).toBe('TEST');
-                expect(json.readonly).toBe('2');
+                expect(json.readonly).toBe(expectedReadonlyParam);
 
                 next();
             });
-
-            response.on('end', next);
 		});
 
         req.write(input);
@@ -150,24 +133,87 @@ describe('restitute', function RestituteTestSuite() {
     }
 
 
+    it('receive an array from a list controller', function (done){
+        retrieveTest('/rest/listTestController', function(result) {
+            expect(result.length).toBe(1);
+            expect(result[0].name).toBe('TEST');
+            expect(result[0].readonly).toBe('2');
+            done();
+        });
+	});
+
+
+    // test with request parameters forwared to the service
+
+
+    it('receive an object from a get controller', function (done){
+        retrieveTest('/rest/getTestController', function(result) {
+            expect(result.name).toBe('TEST');
+            expect(result.readonly).toBe('2');
+            done();
+        });
+	});
+
+
     it('receive an object from a delete controller', function (done){
-        submitTest('DELETE', '/rest/deleteTestController', done);
+        submitTest('DELETE', '/rest/deleteTestController', '2', done);
     });
 
 
     it('receive an object from a save controller via PUT (edit)', function (done){
-		submitTest('PUT', '/rest/saveTestController', done);
+		submitTest('PUT', '/rest/saveTestController', '2', done);
 	});
 
 
     it('receive an object from a save controller via POST (create)', function (done){
-		submitTest('POST', '/rest/saveTestController', done);
+		submitTest('POST', '/rest/saveTestController', '2', done);
 	});
+
+
+    // test with parameter overloaded by the controller
+
+
+    it('receive an array from a list controller', function (done){
+        retrieveTest('/rest/listParamTestController', function(result) {
+            expect(result.length).toBe(1)
+            && expect(result[0].name).toBe('TEST')
+            && expect(result[0].readonly).toBe(1);
+            done();
+        });
+	});
+
+
+
+    it('receive an object from a get controller', function (done){
+        retrieveTest('/rest/getParamTestController', function(result) {
+            expect(result.name).toBe('TEST');
+            expect(result.readonly).toBe(1);
+            done();
+        });
+	});
+
+
+    it('receive an object from a delete controller', function (done){
+        submitTest('DELETE', '/rest/deleteParamTestController', 1, done);
+    });
+
+
+    it('receive an object from a save controller via PUT (edit)', function (done){
+		submitTest('PUT', '/rest/saveParamTestController', 1, done);
+	});
+
+
+    it('receive an object from a save controller via POST (create)', function (done){
+		submitTest('POST', '/rest/saveParamTestController', 1, done);
+	});
+
 
 
     it('Test server should close', function (done){
 		server.close(done);
 	});
+
+
 
 
 });
