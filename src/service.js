@@ -39,12 +39,16 @@ function apiService() {
 
     /**
      * Services instances must implement
-     * this method
+     * this method to resolve or reject the service promise
+     *
+     * @param {Object} params
      *
      * @return {Promise}
      */
-    this.call = function() {
+    this.getResultPromise = function(params) {
         console.log('Not implemented');
+
+        return this.deferred.promise;
     }
 
     /**
@@ -68,7 +72,7 @@ function apiService() {
     this.forbidden = function(message) {
         service.httpstatus = 403;
         service.outcome.success = false;
-        service.outcome.alert.push({ type:'danger' ,message: message});
+        service.outcome.alert.push({ type:'danger' , message: message});
 
         service.deferred.reject(new Error(message));
     }

@@ -165,6 +165,26 @@ function restController(method, path) {
     this.jsonService = function(service) {
         throw new Error('not implemented');
     };
+
+    /**
+     * Output result as JSON string in controller response and end the response
+     * if the promise fail, output the service.outcome object witch is supposed to contrain the error
+     *
+     * @param {apiService} service
+     * @param {Promise}    promise The result promise from apiService.getResultPromise
+     */
+    this.outputJsonFromPromise = function(service, promise) {
+
+        promise.then(function(result) {
+            ctrl.res.statusCode = service.httpstatus;
+            ctrl.res.end(JSON.stringify(result));
+
+        }).catch(function(err) {
+            ctrl.res.statusCode = service.httpstatus;
+            ctrl.res.end(JSON.stringify({ $outcome: service.outcome }));
+        });
+
+    };
 }
 
 
@@ -205,7 +225,7 @@ function listItemsController(path) {
 
 
     /**
-     * Controller use this method to output a service as a rest
+     * List controller use this method to output a service as a rest
      * service
      *
      * This default method is paginated
@@ -218,16 +238,9 @@ function listItemsController(path) {
 
         var params = ctrl.getServiceParameters(ctrl.req);
 
-        var promise = service.call(params, ctrl.paginate);
+        var promise = service.getResultPromise(params, ctrl.paginate);
 
-        promise.then(function(docs) {
-            ctrl.res.statusCode = service.httpstatus;
-            ctrl.res.end(JSON.stringify(docs));
-
-        }).catch(function(err) {
-            ctrl.res.statusCode = service.httpstatus;
-            ctrl.res.end(JSON.stringify({ $outcome: service.outcome }));
-        });
+        ctrl.outputJsonFromPromise(service, promise);
 
         return promise;
     };
@@ -247,7 +260,7 @@ function getItemController(path) {
     var ctrl = this;
 
     /**
-     * Controller use this method to output a service as a rest
+     * Get item controller use this method to output a service as a rest
      * service
      * Output the document with the $outcome property
      *
@@ -259,16 +272,9 @@ function getItemController(path) {
 
         var params = ctrl.getServiceParameters(ctrl.req);
 
-        var promise = service.call(params);
+        var promise = service.getResultPromise(params);
 
-        promise.then(function(document) {
-            ctrl.res.statusCode = service.httpstatus;
-            ctrl.res.end(JSON.stringify(document));
-
-        }).catch(function(err) {
-            ctrl.res.statusCode = service.httpstatus;
-            ctrl.res.end(JSON.stringify({ $outcome: service.outcome }));
-        });
+        ctrl.outputJsonFromPromise(service, promise);
 
         return promise;
     };
@@ -290,7 +296,7 @@ function saveItemController(method, path) {
     var ctrl = this;
 
     /**
-     * Controller use this method to output a service as a rest
+     * Save item controller use this method to output a service as a rest
      * service
      * Output the saved document with the $outcome property
      *
@@ -313,16 +319,9 @@ function saveItemController(method, path) {
             params = require('connect.utils').merge(params, moreparams);
         }
 
-        var promise = service.call(params);
+        var promise = service.getResultPromise(params);
 
-        promise.then(function(document) {
-            ctrl.res.statusCode = service.httpstatus;
-            ctrl.res.end(JSON.stringify(document));
-
-        }).catch(function(err) {
-            ctrl.res.statusCode = service.httpstatus;
-            ctrl.res.end(JSON.stringify({ $outcome: service.outcome }));
-        });
+        ctrl.outputJsonFromPromise(service, promise);
 
         return promise;
     };
@@ -370,7 +369,7 @@ function deleteItemController(path) {
     var ctrl = this;
 
     /**
-     * Controller use this method to output a service as a rest
+     * Delete controller use this method to output a service as a rest
      * service
      * Output the deleted document with the $outcome property
      *
@@ -382,16 +381,9 @@ function deleteItemController(path) {
 
         var params = ctrl.getServiceParameters(ctrl.req);
 
-        var promise = service.call(params);
+        var promise = service.getResultPromise(params);
 
-        promise.then(function(document) {
-            ctrl.res.statusCode = service.httpstatus;
-            ctrl.res.end(JSON.stringify(document));
-
-        }).catch(function(err) {
-            ctrl.res.statusCode = service.httpstatus;
-            ctrl.res.end(JSON.stringify({ $outcome: service.outcome }));
-        });
+        ctrl.outputJsonFromPromise(service, promise);
 
         return promise;
     };

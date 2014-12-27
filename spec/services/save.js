@@ -9,7 +9,7 @@ exports = module.exports = function(services, app) {
      *
      * @return {Promise}
      */
-    service.call = function(params) {
+    service.getResultPromise = function(params) {
 
         service.resolveSuccess({ name: 'TEST', readonly: params.readonly||null }, 'Saved');
 
