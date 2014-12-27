@@ -103,7 +103,7 @@ function restController(method, path) {
         var url_parts = url.parse(request.url, true);
         var queryParams = url_parts.query;
 
-        var params = queryParams;
+        var params = queryParams || {};
 
         if (request.restituteData) {
             var body = JSON.parse(request.restituteData);
@@ -117,7 +117,7 @@ function restController(method, path) {
         }
 
         for(var name in this.forcedParameters) {
-            if (queryParams.hasOwnProperty(name)) {
+            if (this.forcedParameters.hasOwnProperty(name)) {
                 params[name] = this.forcedParameters[name];
             }
         }
