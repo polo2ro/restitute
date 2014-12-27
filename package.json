@@ -5,7 +5,7 @@
   "main": "src/index.js",
   "private": false,
   "scripts": {
-	"test": "./node_modules/jasmine-node/bin/jasmine-node spec/"
+	"test": "./node_modules/jasmine-node/bin/jasmine-node --captureExceptions spec/"
   },
   "repository" : {
     "type": "git",
