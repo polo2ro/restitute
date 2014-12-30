@@ -56,7 +56,7 @@ function apiService() {
      * @param {Object} app
      */
     this.setApp = function(app) {
-
+        service.app = app;
     }
 
     /**

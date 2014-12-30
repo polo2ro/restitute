@@ -133,6 +133,14 @@ describe('restitute', function RestituteTestSuite() {
     }
 
 
+    it('Verify service loader', function(done) {
+
+        var service = restitute.service.load(app, 'get');
+        expect(service.app).toBeDefined();
+        done();
+    });
+
+
     it('receive an array from a list controller', function (done){
         retrieveTest('/rest/listTestController', function(result) {
             expect(result.length).toBe(1);
