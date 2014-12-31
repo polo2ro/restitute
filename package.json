@@ -18,6 +18,9 @@
   "devDependencies": {
     "jasmine-node": "~1.14.3"
   },
+  "peerDependencies": {
+    "express": "^4.1.2"
+  },
   "engine": {
     "node": ">=0.6"
   }
