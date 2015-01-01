@@ -132,6 +132,34 @@ describe('restitute', function RestituteTestSuite() {
         req.end();
     }
 
+    it('obtain parameters from path', function() {
+
+        function getTestPathParamController() {
+            restitute.controller.get.call(this, '/rest/getTestController/:myCustomParameter');
+        }
+        getTestPathParamController.prototype = new restitute.controller.get();
+
+        var controller = getTestPathParamController();
+
+
+        var params = controller.getServiceParameters(http.request({
+            host: 'localhost',
+            port: 3000,
+            path: '/rest/listTestController/1',
+            method: 'GET'
+        }));
+
+        expect(params.myCustomParameter).toBe(1);
+    });
+
+    it('obtain parameters from url parameters', function() {
+
+    });
+
+    it('obtain parameters from posted content', function() {
+
+    });
+
 
     it('Verify service loader', function(done) {
 
@@ -141,7 +169,7 @@ describe('restitute', function RestituteTestSuite() {
     });
 
 
-    it('receive an array from a list controller', function (done){
+    it('receive an array from a list controller', function(done){
         retrieveTest('/rest/listTestController', function(result) {
             expect(result.length).toBe(1);
             expect(result[0].name).toBe('TEST');
@@ -154,7 +182,7 @@ describe('restitute', function RestituteTestSuite() {
     // test with request parameters forwared to the service
 
 
-    it('receive an object from a get controller', function (done){
+    it('receive an object from a get controller', function(done){
         retrieveTest('/rest/getTestController', function(result) {
             expect(result.name).toBe('TEST');
             expect(result.readonly).toBe('2');
@@ -163,17 +191,17 @@ describe('restitute', function RestituteTestSuite() {
 	});
 
 
-    it('receive an object from a delete controller', function (done){
+    it('receive an object from a delete controller', function(done){
         submitTest('DELETE', '/rest/deleteTestController', '2', done);
     });
 
 
-    it('receive an object from a save controller via PUT (edit)', function (done){
+    it('receive an object from a save controller via PUT (edit)', function(done){
 		submitTest('PUT', '/rest/saveTestController', '2', done);
 	});
 
 
-    it('receive an object from a save controller via POST (create)', function (done){
+    it('receive an object from a save controller via POST (create)', function(done){
 		submitTest('POST', '/rest/saveTestController', '2', done);
 	});
 
@@ -181,7 +209,7 @@ describe('restitute', function RestituteTestSuite() {
     // test with parameter overloaded by the controller
 
 
-    it('receive an array from a list controller', function (done){
+    it('receive an array from a list controller', function(done){
         retrieveTest('/rest/listParamTestController', function(result) {
             expect(result.length).toBe(1)
             && expect(result[0].name).toBe('TEST')
@@ -192,7 +220,7 @@ describe('restitute', function RestituteTestSuite() {
 
 
 
-    it('receive an object from a get controller', function (done){
+    it('receive an object from a get controller', function(done){
         retrieveTest('/rest/getParamTestController', function(result) {
             expect(result.name).toBe('TEST');
             expect(result.readonly).toBe(1);
@@ -201,17 +229,17 @@ describe('restitute', function RestituteTestSuite() {
 	});
 
 
-    it('receive an object from a delete controller', function (done){
+    it('receive an object from a delete controller', function(done){
         submitTest('DELETE', '/rest/deleteParamTestController', 1, done);
     });
 
 
-    it('receive an object from a save controller via PUT (edit)', function (done){
+    it('receive an object from a save controller via PUT (edit)', function(done){
 		submitTest('PUT', '/rest/saveParamTestController', 1, done);
 	});
 
 
-    it('receive an object from a save controller via POST (create)', function (done){
+    it('receive an object from a save controller via POST (create)', function(done){
 		submitTest('POST', '/rest/saveParamTestController', 1, done);
 	});
 
