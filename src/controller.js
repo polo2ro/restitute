@@ -93,7 +93,7 @@ function restController(method, path) {
      * Return on object with parameters to give to the service
      * this method merge the client parameters and the forced server parameters
      *
-     * @param {Request} request
+     * @param {http.IncomingMessage} request
      *
      * @return {Promise}
      */

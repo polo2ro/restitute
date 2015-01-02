@@ -101,7 +101,7 @@ describe('restitute', function RestituteTestSuite() {
 
 
         var req = http.request({
-                host: 'localhost',
+                hostname: 'localhost',
                 port: 3000,
                 path: path,
                 method: method,
@@ -132,27 +132,49 @@ describe('restitute', function RestituteTestSuite() {
         req.end();
     }
 
-    it('obtain parameters from path', function() {
-
+    /**
+     * [[Description]]
+     * @param   {string} pathPattern [[Description]]
+     * @param   {string} urlPath     [[Description]]
+     * @returns {object} parameters
+     */
+    function getGetControllerParams(pathPattern, urlPath) {
         function getTestPathParamController() {
-            restitute.controller.get.call(this, '/rest/getTestController/:myCustomParameter');
+            restitute.controller.get.call(this, pathPattern);
         }
         getTestPathParamController.prototype = new restitute.controller.get();
 
-        var controller = getTestPathParamController();
+        var controller = new getTestPathParamController();
+
+        var request = new http.IncomingMessage();
+        request.url = urlPath;
+
+        return controller.getServiceParameters(request);
+    }
 
 
-        var params = controller.getServiceParameters(http.request({
-            host: 'localhost',
-            port: 3000,
-            path: '/rest/listTestController/1',
-            method: 'GET'
-        }));
 
-        expect(params.myCustomParameter).toBe(1);
+    it('obtain parameters from path on composed request', function() {
+
+        var params = getGetControllerParams(
+            '/rest/getTestController/:myCustomParameter/:id',
+            '/rest/listTestController/1/2'
+        );
+
+        expect(params.myCustomParameter).toBe('1');
+        expect(params.id).toBe('2');
     });
 
+
     it('obtain parameters from url parameters', function() {
+
+        var params = getGetControllerParams(
+            '/rest/getTestController/',
+            '/rest/getTestController?myCustomParameter=1&id=2'
+        );
+
+        expect(params.myCustomParameter).toBe('1');
+        expect(params.id).toBe('2');
 
     });
 
