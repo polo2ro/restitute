@@ -138,6 +138,10 @@ Exemple with the delete.js file of the "articles" service :
 Controllers
 ===========
 
+controller objects must used with [express.js](http://http://expressjs.com/), [body-parser](https://github.com/expressjs/body-parser) middleware, [method-override](https://github.com/expressjs/method-override) middleware
+
+
+
 Methods
 -------
 
@@ -197,7 +201,4 @@ restitute.controller.delete
 
 Base class to create a controller linked to a delete service
 
-
-Using with express
-==================
 
