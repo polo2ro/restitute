@@ -61,7 +61,15 @@ describe('restitute', function RestituteTestSuite() {
 
             response.on('end', function() {
 
-                var json = JSON.parse(output);
+                try {
+                    var json = JSON.parse(output);
+                } catch(e) {
+
+                    console.log(output);
+                    console.log(e);
+                    return next({});
+                }
+
                 next(json);
             });
 		});
@@ -120,55 +128,7 @@ describe('restitute', function RestituteTestSuite() {
         req.end();
     }
 
-    /**
-     * [[Description]]
-     * @param   {string} pathPattern [[Description]]
-     * @param   {string} urlPath     [[Description]]
-     * @returns {object} parameters
-     */
-    function getGetControllerParams(pathPattern, urlPath) {
-        function getTestPathParamController() {
-            restitute.controller.get.call(this, pathPattern);
-        }
-        getTestPathParamController.prototype = new restitute.controller.get();
 
-        var controller = new getTestPathParamController();
-
-        var request = new http.IncomingMessage();
-        request.url = urlPath;
-
-        return controller.getServiceParameters(request);
-    }
-
-
-
-    it('obtain parameters from path on composed request', function() {
-
-        var params = getGetControllerParams(
-            '/rest/getTestController/:myCustomParameter/:id',
-            '/rest/listTestController/1/2'
-        );
-
-        expect(params.myCustomParameter).toBe('1');
-        expect(params.id).toBe('2');
-    });
-
-
-    it('obtain parameters from url parameters', function() {
-
-        var params = getGetControllerParams(
-            '/rest/getTestController/',
-            '/rest/getTestController?myCustomParameter=1&id=2'
-        );
-
-        expect(params.myCustomParameter).toBe('1');
-        expect(params.id).toBe('2');
-
-    });
-
-    it('obtain parameters from posted content', function() {
-
-    });
 
 
     it('Verify service loader', function(done) {
@@ -193,9 +153,10 @@ describe('restitute', function RestituteTestSuite() {
 
 
     it('receive an object from a get controller', function(done){
-        retrieveTest('/rest/getTestController', function(result) {
+        retrieveTest('/rest/getTestController/666', function(result) {
             expect(result.name).toBe('TEST');
             expect(result.readonly).toBe('2');
+            expect(result.id).toBe('666');
             done();
         });
 	});

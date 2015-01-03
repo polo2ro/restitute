@@ -92,14 +92,23 @@ function restController(method, path) {
      */
     this.getServiceParameters = function(request) {
 
-        var url = require('url');
-        var url_parts = url.parse(request.url, true);
-        var queryParams = url_parts.query;
+        var params = request.query || {};
 
-        var params = queryParams || {};
+        if (request.params) {
 
+            // route path parameters
+
+            for(var name in request.params) {
+                if (request.params.hasOwnProperty(name)) {
+                    params[name] = request.params[name];
+                }
+            }
+        }
 
         if (request.body) {
+
+            // posted body in json format
+
             for(var name in request.body) {
                 if (request.body.hasOwnProperty(name)) {
                     params[name] = request.body[name];
@@ -300,16 +309,6 @@ function saveItemController(method, path) {
     this.jsonService = function(service, moreparams) {
 
         var params = ctrl.getServiceParameters(ctrl.req);
-
-
-        // for ID in parameters if given by route
-        if (ctrl.req.params.id) {
-            params.id = ctrl.req.params.id;
-        }
-
-        if (moreparams) {
-            params = require('connect.utils').merge(params, moreparams);
-        }
 
         var promise = service.getResultPromise(params);
 

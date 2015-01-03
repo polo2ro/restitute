@@ -16,7 +16,7 @@ listTestController.prototype = new restitute.controller.list();
 
 
 function getTestController() {
-    restitute.controller.get.call(this, '/rest/getTestController');
+    restitute.controller.get.call(this, '/rest/getTestController/:id');
 
     this.controllerAction = function() {
         return this.jsonService(this.service('get'));
