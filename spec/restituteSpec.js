@@ -14,47 +14,7 @@ var bodyParser = require('body-parser');
 app.use(bodyParser.json());
 app.use(require('method-override')());
 
-/*
-var app = function(req, res) {
 
-    req.app = app;
-	var path = url.parse(req.url).pathname;
-
-
-    function forwardToController(controller)
-    {
-
-        if (path === controller.path) {
-            // this is the matching route
-
-            controller.onRequest(req, res).then(function() {
-                req.connection.destroy();
-            });
-
-            return true;
-        }
-
-        return false;
-    }
-
-
-    // search matching route
-
-    for(var method in sampleController) {
-
-        var controller = new sampleController[method]();
-
-        if (forwardToController(controller)) {
-            return;
-        }
-    }
-
-
-    res.statusCode = 404;
-    res.end(JSON.stringify({ message: 'No matching query' }));
-    req.connection.destroy();
-};
-*/
 
 
 for(var ctrlType in sampleController) {
@@ -72,11 +32,9 @@ app.getService = function(path) {
 };
 
 
-//var server = http.createServer(app);
-app.listen(3000);
+var server = http.createServer(app);
 
-
-
+server.listen(3000);
 
 
 
@@ -119,41 +77,44 @@ describe('restitute', function RestituteTestSuite() {
 
 
         var req = http.request({
-                hostname: 'localhost',
-                port: 3000,
-                path: path,
-                method: method,
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Content-Length': input.length
-                }}, function(response) {
-			expect(response.statusCode).toBe(200);
+            hostname: 'localhost',
+            port: 3000,
+            path: path,
+            method: method,
+            headers: {
+                'Content-Type': 'application/json',
+                'Content-Length': input.length
+            }},
+            function(response) {
+
+                expect(response.statusCode).toBe(200);
 
 
-            response.setEncoding('utf8');
-            response.on('data', function (chunk) {
-                output += chunk;
+                response.setEncoding('utf8');
+                response.on('data', function (chunk) {
+                    output += chunk;
 
-            });
+                });
 
-            response.on('end', function() {
+                response.on('end', function() {
 
 
-                try {
-                    var json = JSON.parse(output);
-                } catch(e) {
+                    try {
+                        var json = JSON.parse(output);
+                    } catch(e) {
 
-                    console.log(output);
-                    console.log(e);
-                    return next();
-                }
+                        console.log(output);
+                        console.log(e);
+                        return next();
+                    }
 
-                expect(json.name).toBe('TEST');
-                expect(json.readonly).toBe(expectedReadonlyParam);
+                    expect(json.name).toBe('TEST');
+                    expect(json.readonly).toBe(expectedReadonlyParam);
 
-                next();
-            });
-		});
+                    next();
+                });
+            }
+        );
 
         req.write(input);
         req.end();
@@ -180,7 +141,7 @@ describe('restitute', function RestituteTestSuite() {
     }
 
 
-    /*
+
     it('obtain parameters from path on composed request', function() {
 
         var params = getGetControllerParams(
@@ -191,7 +152,7 @@ describe('restitute', function RestituteTestSuite() {
         expect(params.myCustomParameter).toBe('1');
         expect(params.id).toBe('2');
     });
-    */
+
 
     it('obtain parameters from url parameters', function() {
 
@@ -246,12 +207,12 @@ describe('restitute', function RestituteTestSuite() {
 
 
     it('receive an object from a save controller via PUT (edit)', function(done){
-		submitTest('PUT', '/rest/saveTestController', '2', done);
+		submitTest('PUT', '/rest/updateTestController', '2', done);
 	});
 
 
     it('receive an object from a save controller via POST (create)', function(done){
-		submitTest('POST', '/rest/saveTestController', '2', done);
+		submitTest('POST', '/rest/createTestController', '2', done);
 	});
 
 
@@ -284,18 +245,19 @@ describe('restitute', function RestituteTestSuite() {
 
 
     it('receive an object from a save controller via PUT (edit)', function(done){
-		submitTest('PUT', '/rest/saveParamTestController', 1, done);
+		submitTest('PUT', '/rest/updateParamTestController', 1, done);
 	});
 
 
     it('receive an object from a save controller via POST (create)', function(done){
-		submitTest('POST', '/rest/saveParamTestController', 1, done);
+		submitTest('POST', '/rest/createParamTestController', 1, done);
 	});
 
 
 
     it('Test server should close', function (done){
-		server.close(done);
+        server.close();
+        done();
 	});
 
 

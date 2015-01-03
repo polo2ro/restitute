@@ -10,6 +10,7 @@
  * @param {string} path           route path
  */
 function restController(method, path) {
+
     this.method = method;
     this.path = path;
     this.controllerAction = null;
@@ -40,11 +41,6 @@ function restController(method, path) {
         ctrl.req = req;
         ctrl.res = res;
 
-        ctrl.req.restituteData = '';
-
-        req.on('data', function(chunk) {
-            ctrl.req.restituteData += chunk.toString();
-        })
 
         var workflow = require('./workflow');
         ctrl.workflow = workflow(req, res);
@@ -80,10 +76,7 @@ function restController(method, path) {
             return srv;
         };
 
-
-        req.on('end', function() {
-            deferred.resolve(ctrl.controllerAction());
-        });
+        deferred.resolve(ctrl.controllerAction());
 
         return deferred.promise;
     };
@@ -105,16 +98,15 @@ function restController(method, path) {
 
         var params = queryParams || {};
 
-        if (request.restituteData) {
-            var body = JSON.parse(request.restituteData);
-            if (body) {
-                for(var name in body) {
-                    if (body.hasOwnProperty(name)) {
-                        params[name] = body[name];
-                    }
+
+        if (request.body) {
+            for(var name in request.body) {
+                if (request.body.hasOwnProperty(name)) {
+                    params[name] = request.body[name];
                 }
             }
         }
+
 
         for(var name in this.forcedParameters) {
             if (this.forcedParameters.hasOwnProperty(name)) {

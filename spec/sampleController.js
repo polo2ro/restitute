@@ -28,25 +28,35 @@ getTestController.prototype = new restitute.controller.get();
 
 
 function deleteTestController() {
-    restitute.controller.get.call(this, '/rest/deleteTestController');
+    restitute.controller.delete.call(this, '/rest/deleteTestController');
 
     this.controllerAction = function() {
         return this.jsonService(this.service('delete'));
     };
 }
-deleteTestController.prototype = new restitute.controller.get();
+deleteTestController.prototype = new restitute.controller.delete();
 
 
 
 
-function saveTestController() {
-    restitute.controller.get.call(this, '/rest/saveTestController');
+function createTestController() {
+    restitute.controller.create.call(this, '/rest/createTestController');
 
     this.controllerAction = function() {
         return this.jsonService(this.service('save'));
     };
 }
-saveTestController.prototype = new restitute.controller.get();
+createTestController.prototype = new restitute.controller.create();
+
+
+function updateTestController() {
+    restitute.controller.update.call(this, '/rest/updateTestController');
+
+    this.controllerAction = function() {
+        return this.jsonService(this.service('save'));
+    };
+}
+updateTestController.prototype = new restitute.controller.update();
 
 
 // controllers with orverwritten parameter
@@ -77,25 +87,35 @@ getParamTestController.prototype = new restitute.controller.get();
 
 
 function deleteParamTestController() {
-    restitute.controller.get.call(this, '/rest/deleteParamTestController');
+    restitute.controller.delete.call(this, '/rest/deleteParamTestController');
 
     this.controllerAction = function() {
         return this.jsonService(this.service('delete', { readonly: 1 }));
     };
 }
-deleteParamTestController.prototype = new restitute.controller.get();
+deleteParamTestController.prototype = new restitute.controller.delete();
 
 
 
 
-function saveParamTestController() {
-    restitute.controller.get.call(this, '/rest/saveParamTestController');
+function createParamTestController() {
+    restitute.controller.create.call(this, '/rest/createParamTestController');
 
     this.controllerAction = function() {
         return this.jsonService(this.service('save', { readonly: 1 }));
     };
 }
-saveParamTestController.prototype = new restitute.controller.get();
+createParamTestController.prototype = new restitute.controller.create();
+
+
+function updateParamTestController() {
+    restitute.controller.update.call(this, '/rest/updateParamTestController');
+
+    this.controllerAction = function() {
+        return this.jsonService(this.service('save', { readonly: 1 }));
+    };
+}
+updateParamTestController.prototype = new restitute.controller.update();
 
 
 
@@ -108,10 +128,12 @@ exports = module.exports = {
     list: listTestController,
     get: getTestController,
     delete: deleteTestController,
-    save: saveTestController,
+    create: createTestController,
+    update: updateTestController,
 
     listParam: listParamTestController,
     getParam: getParamTestController,
     deleteParam: deleteParamTestController,
-    saveParam: saveParamTestController
+    createParam: createParamTestController,
+    updateParam: updateParamTestController
 };
