@@ -4,7 +4,7 @@
 restitute
 =========
 
-a nodejs controller libraray to create a JSON REST service
+a nodejs controller library to create a JSON REST service
 
 
 
