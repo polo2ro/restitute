@@ -185,8 +185,7 @@ Base class to create a controller linked to a list service, additional forced pa
 
 **Using a list service from a controller**
 
-__/rest/admin/users__ is the route path of the controller
-__admin/users/list__ is the service file, list.js in the users folder
+__/rest/admin/users__ is the route path of the controller, __admin/users/list__ is the service file, list.js in the users folder
 
 ```javascript
 
