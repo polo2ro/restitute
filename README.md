@@ -96,6 +96,8 @@ Can be used a callback in a mongoose query, forward mongoose errors to service e
 Resolve a mongoose query to a paginated result into the service promise.
 
 
+
+
 restitute.service.get
 ---------------------
 
@@ -180,6 +182,24 @@ restitute.controller.list
 
 Base class to create a controller linked to a list service, additional forced parameters can be added to the service parameters.
 
+
+**Using a list service from a controller**
+
+__/rest/admin/users__ is the route path of the controller
+__admin/users/list__ is the service file, list.js in the users folder
+
+```javascript
+
+function listController() {
+    ctrlFactory.list.call(this, '/rest/admin/users');
+    
+    this.controllerAction = function() {
+        this.jsonService(this.service('admin/users/list'));
+    };
+}
+listController.prototype = new ctrlFactory.list();
+
+```
 
 restitute.controller.get
 ------------------------
