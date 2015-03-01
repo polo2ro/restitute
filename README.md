@@ -69,7 +69,7 @@ Class used to create a service, eventually paginated
 the service input will be an object of parameters, the output will be an array of objects
 
 file content for the list service :
-
+```javascript
     'use strict';
     exports = module.exports = function(services, app) {
         var service = new services.list(app);
@@ -79,6 +79,8 @@ file content for the list service :
         };
         return service;
     };
+```
+This service example output an empty array
 
 service.deferred is the deferred object from the Q class, it can be resolved or rejected asynchronously after a database interogation
 
@@ -114,7 +116,7 @@ restitute.service.delete
 Class used to create a service to delete a database record
 
 Exemple with the delete.js file of the "articles" service :
-
+```javascript
     'use strict';
 
     exports = module.exports = function(services, app) {
@@ -132,7 +134,7 @@ Exemple with the delete.js file of the "articles" service :
 
         return service;
     };
-
+```
 
 
 Controllers
