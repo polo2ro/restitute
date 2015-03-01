@@ -189,6 +189,8 @@ __/rest/admin/users__ is the route path of the controller, __admin/users/list__ 
 
 ```javascript
 
+var ctrlFactory = require('restitute').controller;
+
 function listController() {
     ctrlFactory.list.call(this, '/rest/admin/users');
     
