@@ -1,4 +1,4 @@
-'use strict';
+
 
 
 /**
@@ -10,6 +10,8 @@
  * @param {string} path           route path
  */
 function restController(method, path) {
+
+    'use strict';
 
     this.method = method;
     this.path = path;
@@ -133,7 +135,7 @@ function restController(method, path) {
      * @param {String} message
      *
      */
-    this.accessDenied = function(message) {
+    ctrl.accessDenied = function(message) {
          ctrl.workflow.httpstatus = 401;
          ctrl.workflow.emit('exception', message);
     };

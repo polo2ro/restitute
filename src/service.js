@@ -1,4 +1,4 @@
-'use strict';
+
 
 /**
  * Service base class
@@ -8,6 +8,8 @@
  *
  */
 function apiService() {
+
+    'use strict';
 
     var service = this;
 

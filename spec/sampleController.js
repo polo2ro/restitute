@@ -1,10 +1,11 @@
-'use strict';
+
 var restitute = require('../src/index');
 
 
 // Simple controllers
 
 function listTestController() {
+
     restitute.controller.list.call(this, '/rest/listTestController');
 
     this.controllerAction = function() {
@@ -16,6 +17,7 @@ listTestController.prototype = new restitute.controller.list();
 
 
 function getTestController() {
+
     restitute.controller.get.call(this, '/rest/getTestController/:id');
 
     this.controllerAction = function() {
@@ -28,6 +30,7 @@ getTestController.prototype = new restitute.controller.get();
 
 
 function deleteTestController() {
+
     restitute.controller.delete.call(this, '/rest/deleteTestController');
 
     this.controllerAction = function() {
@@ -40,6 +43,7 @@ deleteTestController.prototype = new restitute.controller.delete();
 
 
 function createTestController() {
+
     restitute.controller.create.call(this, '/rest/createTestController');
 
     this.controllerAction = function() {

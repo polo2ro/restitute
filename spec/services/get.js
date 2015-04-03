@@ -1,6 +1,8 @@
-'use strict';
+
 
 exports = module.exports = function(services, app) {
+
+    'use strict';
 
     var service = new services.get(app);
 

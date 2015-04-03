@@ -1,4 +1,4 @@
-'use strict';
+
 var http = require('http');
 var url = require('url');
 var restitute = require('../src/index');
@@ -40,7 +40,7 @@ server.listen(3000);
 
 describe('restitute', function RestituteTestSuite() {
 
-
+    'use strict';
 
 
 
@@ -61,8 +61,10 @@ describe('restitute', function RestituteTestSuite() {
 
             response.on('end', function() {
 
+                var json;
+
                 try {
-                    var json = JSON.parse(output);
+                    json = JSON.parse(output);
                 } catch(e) {
 
                     console.log(output);
@@ -105,10 +107,10 @@ describe('restitute', function RestituteTestSuite() {
                 });
 
                 response.on('end', function() {
-
+                    var json;
 
                     try {
-                        var json = JSON.parse(output);
+                        json = JSON.parse(output);
                     } catch(e) {
 
                         console.log(output);
@@ -182,9 +184,9 @@ describe('restitute', function RestituteTestSuite() {
 
     it('receive an array from a list controller', function(done){
         retrieveTest('/rest/listParamTestController', function(result) {
-            expect(result.length).toBe(1)
-            && expect(result[0].name).toBe('TEST')
-            && expect(result[0].readonly).toBe(1);
+            expect(result.length).toBe(1);
+            expect(result[0].name).toBe('TEST');
+            expect(result[0].readonly).toBe(1);
             done();
         });
 	});

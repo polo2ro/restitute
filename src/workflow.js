@@ -1,4 +1,4 @@
-'use strict';
+
 
 /**
  * Event workflow
@@ -17,122 +17,124 @@
  * @return EventEmitter
  */
 exports = module.exports = function(req, res) {
-  var workflow = new (require('events').EventEmitter)();
+    'use strict';
 
-  workflow.httpstatus = 200;
+    var workflow = new (require('events').EventEmitter)();
 
-  workflow.document = null;
+    workflow.httpstatus = 200;
+
+    workflow.document = null;
 
 
-  workflow.outcome = {
+    workflow.outcome = {
     success: false,
     alert: [],
     errfor: {}
-  };
+    };
 
 
-  /**
-   * @return bool
-   */
-  workflow.hasErrors = function() {
+    /**
+    * @return bool
+    */
+    workflow.hasErrors = function() {
 
-	if (Object.keys(workflow.outcome.errfor).length !== 0)
-	{
-		return true;
-	}
+    if (Object.keys(workflow.outcome.errfor).length !== 0)
+    {
+        return true;
+    }
 
-	for(var i=0; i<workflow.outcome.alert.length; i++)
-	{
-		if (workflow.outcome.alert[i].type === 'danger')
-		{
-			return true;
-		}
-	}
+    for(var i=0; i<workflow.outcome.alert.length; i++)
+    {
+        if (workflow.outcome.alert[i].type === 'danger')
+        {
+            return true;
+        }
+    }
 
     return false;
-  };
+    };
 
-  /**
-   * Test required fields in req.body
-   * @return bool
-   */
-  workflow.needRequiredFields = function(list) {
+    /**
+    * Test required fields in req.body
+    * @return bool
+    */
+    workflow.needRequiredFields = function(list) {
 
 
-	 for(var i=0; i<list.length; i++)
-	 {
-		if (!req.body[list[i]]) {
-			workflow.outcome.errfor[list[i]] = 'required';
-			workflow.httpstatus = 400; // Bad Request
-		}
-	 }
+         for(var i=0; i<list.length; i++)
+         {
+            if (!req.body[list[i]]) {
+                workflow.outcome.errfor[list[i]] = 'required';
+                workflow.httpstatus = 400; // Bad Request
+            }
+         }
 
-	 return this.hasErrors();
-  };
+         return this.hasErrors();
+    };
 
-  /**
-   * emit exception if parameter contain a mongoose error
-   */
-  workflow.handleMongoError = function(err) {
-	  if (err) {
+    /**
+    * emit exception if parameter contain a mongoose error
+    */
+    workflow.handleMongoError = function(err) {
+      if (err) {
 
-		  console.trace(err);
+          console.trace(err);
 
-		  workflow.httpstatus = 400; // Bad Request
+          workflow.httpstatus = 400; // Bad Request
 
-		  if (err.errors) {
-			  for(var field in err.errors) {
-				  var e = err.errors[field];
-				  workflow.outcome.errfor[field] = e.type;
-				  workflow.outcome.alert.push({ type:'danger' ,message: e.message});
-			  }
-		  }
+          if (err.errors) {
+              for(var field in err.errors) {
+                  var e = err.errors[field];
+                  workflow.outcome.errfor[field] = e.type;
+                  workflow.outcome.alert.push({ type:'danger' ,message: e.message});
+              }
+          }
 
-		  workflow.outcome.alert.push({ type:'danger' ,message: err.message});
+          workflow.outcome.alert.push({ type:'danger' ,message: err.message});
 
           workflow.emit('response');
-		  return false;
-	  }
+          return false;
+      }
 
-	  return true;
-  };
+      return true;
+    };
 
 
-  workflow.success = function(message) {
-    workflow.outcome.alert.push({
-        type: 'success',
-        message: message
+    workflow.success = function(message) {
+        workflow.outcome.alert.push({
+            type: 'success',
+            message: message
+        });
+
+        workflow.emit('response');
+    };
+
+
+    workflow.on('exception', function(err) {
+        workflow.outcome.alert.push({ type:'danger' ,message: err});
+        return workflow.emit('response');
     });
 
-    workflow.emit('response');
-  }
 
+    workflow.on('response', function() {
+        workflow.outcome.success = !workflow.hasErrors();
 
-  workflow.on('exception', function(err) {
-    workflow.outcome.alert.push({ type:'danger' ,message: err});
-    return workflow.emit('response');
-  });
+        if (!workflow.document) {
+            // console.log('missing document in outcome');
+            workflow.document = {}; // return empty document
+        }
 
+        if (workflow.document.constructor.name === 'model') {
+            // force as a plain object to add the new property
+            workflow.document = workflow.document.toObject();
+        }
 
-  workflow.on('response', function() {
-    workflow.outcome.success = !workflow.hasErrors();
+        workflow.document.$outcome = workflow.outcome;
 
-    if (!workflow.document) {
-        // console.log('missing document in outcome');
-        workflow.document = {}; // return empty document
-    }
-
-    if (workflow.document.constructor.name === 'model') {
-        // force as a plain object to add the new property
-        workflow.document = workflow.document.toObject();
-    }
-
-    workflow.document['$outcome'] = workflow.outcome;
-
-    res.status(workflow.httpstatus).send(workflow.document);
-  });
+        res.status(workflow.httpstatus).send(workflow.document);
+    });
 
 
 
-  return workflow;
+    return workflow;
 };
