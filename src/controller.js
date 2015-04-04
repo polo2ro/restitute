@@ -13,6 +13,8 @@ function restController(method, path) {
 
     'use strict';
 
+    /*jshint validthis: true */
+
     this.method = method;
     this.path = path;
     this.controllerAction = null;
@@ -94,13 +96,14 @@ function restController(method, path) {
      */
     this.getServiceParameters = function(request) {
 
+        var name;
         var params = request.query || {};
 
         if (request.params) {
 
             // route path parameters
 
-            for(var name in request.params) {
+            for(name in request.params) {
                 if (request.params.hasOwnProperty(name)) {
                     params[name] = request.params[name];
                 }
@@ -111,7 +114,7 @@ function restController(method, path) {
 
             // posted body in json format
 
-            for(var name in request.body) {
+            for(name in request.body) {
                 if (request.body.hasOwnProperty(name)) {
                     params[name] = request.body[name];
                 }
@@ -119,7 +122,7 @@ function restController(method, path) {
         }
 
 
-        for(var name in this.forcedParameters) {
+        for(name in this.forcedParameters) {
             if (this.forcedParameters.hasOwnProperty(name)) {
                 params[name] = this.forcedParameters[name];
             }
