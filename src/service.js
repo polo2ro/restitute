@@ -11,6 +11,8 @@ function apiService() {
 
     'use strict';
 
+    /*jshint validthis: true */
+
     var service = this;
 
     /**
@@ -51,7 +53,7 @@ function apiService() {
         console.log('Not implemented');
 
         return this.deferred.promise;
-    }
+    };
 
     /**
      * Set application
@@ -59,7 +61,7 @@ function apiService() {
      */
     this.setApp = function(app) {
         service.app = app;
-    }
+    };
 
     /**
      * The server understood the request, but is refusing to fulfill it.
@@ -77,7 +79,7 @@ function apiService() {
         service.outcome.alert.push({ type:'danger' , message: message});
 
         service.deferred.reject(new Error(message));
-    }
+    };
 
 
     /**
@@ -108,7 +110,7 @@ function apiService() {
             type: 'success',
             message: message
         });
-    }
+    };
 
 
     /**
@@ -131,7 +133,7 @@ function apiService() {
         output.$outcome = service.outcome;
 
         service.deferred.resolve(output);
-    }
+    };
 
 
 
@@ -190,7 +192,7 @@ function apiService() {
     };
 
 
-};
+}
 
 
 /**
@@ -249,7 +251,7 @@ function listItemsService(app) {
 
             return mongOutcome(err, docs);
         });
-    }
+    };
 }
 
 listItemsService.prototype = new apiService();
