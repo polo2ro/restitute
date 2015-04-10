@@ -16,6 +16,12 @@ function apiService() {
     var service = this;
 
     /**
+     * trace errors to console
+     * @var {Boolean}
+     */
+    this.trace = false;
+
+    /**
      * HTTP status for service
      * will be used only by REST service
      */
@@ -143,13 +149,16 @@ function apiService() {
      * emit exception if parameter contain a mongoose error
      *
      * @param {Error|null} err - a mongoose error or no error
+     * @param {Boolean} trace   set to false to disable console.trace of the error
      *
      * @return {Boolean}
      */
     this.handleMongoError = function(err) {
         if (err) {
 
-            console.trace(err);
+            if (true === service.trace) {
+                console.trace(err);
+            }
 
             service.httpstatus = 400; // Bad Request
 
