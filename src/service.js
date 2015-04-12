@@ -70,6 +70,7 @@ function apiService() {
     };
 
     /**
+     *  Reject the service promise with an forbidden status
      * The server understood the request, but is refusing to fulfill it.
      * Authorization will not help and the request SHOULD NOT be repeated.
      * If the request method was not HEAD and the server wishes to make public
@@ -77,10 +78,28 @@ function apiService() {
      * the refusal in the entity. If the server does not wish to make this
      * information available to the client, the status code 404 (Not Found)
      * can be used instead.
-     * @param {[[Type]]} message [[Description]]
+     * @param {String} message
      */
     this.forbidden = function(message) {
         service.httpstatus = 403;
+        service.outcome.success = false;
+        service.outcome.alert.push({ type:'danger' , message: message});
+
+        service.deferred.reject(new Error(message));
+    };
+
+
+    /**
+     * Reject the service promise with an error status
+     * The HTTP server encountered an unexpected condition which prevented
+     * it from fulfilling the request.
+     * For example this error can be caused by a serveur misconfiguration,
+     * or a resource exhausted or denied to the server on the host machine.
+     *
+     * @param {String} message
+     */
+    this.error = function(message) {
+        service.httpstatus = 500;
         service.outcome.success = false;
         service.outcome.alert.push({ type:'danger' , message: message});
 
