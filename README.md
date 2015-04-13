@@ -156,12 +156,19 @@ Methods to use within a controller
 Method called when the controller route path is fired by the app
 
 
-**restController.accessDenied(message)**
+**Output shortcuts**
+
+***restController.error(message)***
+
+Output a 500 internal error
+
+
+***restController.accessDenied(message)***
 
 Output a 401 access denied error
 
 
-**restController.notFound(message)**
+***restController.notFound(message)***
 
 Output a 404 not found error
 
