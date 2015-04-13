@@ -33,19 +33,24 @@ Methods
 
 Methods to use within a service
 
+**apiService.error(message)**
+
+set httpstatus to 500 and outcome object with the given message
+resolve the service promise with the outcome object
+
 **apiService.forbidden(message)**
 
-set httpstatus and outcome object
+set httpstatus to 401 and outcome object with the given message
 resolve the service promise with the outcome object
 
 **apiService.notFound(message)**
 
-set httpstatus and outcome object
+set httpstatus to 404 and outcome object with the given message
 resolve the service promise with the outcome object
 
 **apiService.success(message)**
 
-set httpstatus and outcome object
+set httpstatus to 200 and outcome object with the given message
 resolve the service promise with the outcome object
 
 **apiService.resolveSuccess(document, message)**

@@ -133,6 +133,18 @@ function restController(method, path) {
 
 
     /**
+     * Output a 500 http code
+     * Emit wokflow exception with message
+     * @param {String} message
+     *
+     */
+    ctrl.accessDenied = function(message) {
+         ctrl.workflow.httpstatus = 500;
+         ctrl.workflow.emit('exception', message);
+    };
+
+
+    /**
      * Output a 401 http code
      * Emit wokflow exception with message
      * @param {String} message
