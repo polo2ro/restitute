@@ -138,7 +138,7 @@ function restController(method, path) {
      * @param {String} message
      *
      */
-    ctrl.accessDenied = function(message) {
+    ctrl.error = function(message) {
          ctrl.workflow.httpstatus = 500;
          ctrl.workflow.emit('exception', message);
     };
