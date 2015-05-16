@@ -193,6 +193,8 @@ function restController(method, path) {
      */
     this.outputJsonFromPromise = function(service, promise) {
 
+        ctrl.res.setHeader("Content-Type", "application/json");
+
         promise.then(function(result) {
             ctrl.res.statusCode = service.httpstatus;
             ctrl.res.end(JSON.stringify(result));
