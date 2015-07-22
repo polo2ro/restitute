@@ -236,16 +236,11 @@ function listItemsService(app) {
     var service = this;
 
 
-    this.getQueryResult = function(find, cols, sortkey, paginate) {
-
-    };
-
-
     /**
      * Default function used to resolve a result set
      *
-     * @param {Error} err  mongoose error
-     * @param {Array} docs an array of mongoose documents or an array of objects
+     * @param {Error} err   mongoose error
+     * @param {Array} docs  an array of mongoose documents or an array of objects
      */
     this.mongOutcome = function(err, docs) {
         if (service.handleMongoError(err))
@@ -258,27 +253,47 @@ function listItemsService(app) {
 
     /**
      * Resolve a mongoose query, paginated or not
-     * @param query find
-     * @param string cols
-     * @param string sortkey
-     * @param function [paginate] (controller optional function to paginate result)
-     * @param function [mongOutcome] optional function to customise resultset before resolving
+     * This method can be used by the service to resolve a mongoose query
+     * The paginate parameter is optional, if not provided, all documents will be resolved to the service promise.
+     * the function to use for pagination is the 2nd argument of the getResultPromise() method
+     * @see listItemsService.getResultPromise()
+     *
+     * @param {Query}       find
+     * @param {function}    [paginate]      (controller optional function to paginate result)
+     * @param {function}    [mongOutcome]   optional function to customise resultset before resolving
      */
-    this.resolveQuery = function(find, cols, sortkey, paginate, mongOutcome) {
+    this.resolveQuery = function(find, paginate, mongOutcome) {
 
         if (!mongOutcome) {
             mongOutcome = this.mongOutcome;
         }
 
-
-        var q = find.select(cols).sort(sortkey);
-        q.exec(function(err, docs) {
+        find.exec(function(err, docs) {
             if (!err && typeof paginate === 'function') {
-                return paginate(docs.length, q).exec(mongOutcome);
+                return paginate(docs.length, find).exec(mongOutcome);
             }
 
             return mongOutcome(err, docs);
         });
+    };
+
+
+    /**
+     * Services instances must implement
+     * this method to resolve or reject the service promise
+     * list items services have an additional parameter "paginate", this function will be given as parameter
+     * by the controller
+     *
+     * @see listItemsController.paginate()
+     *
+     * @param {Object} params
+     * @param {function} paginate
+     *
+     * @return {Promise}
+     */
+    this.getResultPromise = function(params, paginate) {
+        console.log('Not implemented');
+        return this.deferred.promise;
     };
 }
 
