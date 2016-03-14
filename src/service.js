@@ -83,6 +83,11 @@ function apiService() {
     this.forbidden = function(message) {
         service.httpstatus = 403;
         service.outcome.success = false;
+
+        if (typeof message === "object" && message.message) {
+            message = message.message;
+        }
+
         service.outcome.alert.push({ type:'danger' , message: message});
 
         service.deferred.reject(new Error(message));
@@ -101,6 +106,11 @@ function apiService() {
     this.error = function(message) {
         service.httpstatus = 500;
         service.outcome.success = false;
+
+        if (typeof message === "object" && message.message) {
+            message = message.message;
+        }
+
         service.outcome.alert.push({ type:'danger' , message: message});
 
         service.deferred.reject(new Error(message));
