@@ -69,6 +69,45 @@ function apiService() {
         service.app = app;
     };
 
+
+    /**
+     * Add alert to service
+     * @param {string} type   One of boostrap alert types (danger|success|info)
+     * @param {String|Error} err  Error message or object
+     */
+    this.addAlert = function(type, err) {
+
+        var alert = { type: type };
+
+        if (err instanceof Error) {
+            alert = err;
+            alert.type = type;
+        } else if (typeof err === 'string') {
+            alert.message = err;
+        } else {
+            console.error(err);
+            throw new Error('Wrong error type, must be a string or Error, got '+(typeof err));
+        }
+
+        service.outcome.alert.push(alert);
+    };
+
+
+    /**
+     * Get an error object from a mixed value
+     * @param   {String|Error} err
+     * @returns {Error}
+     */
+    this.getError = function(err) {
+        if (err instanceof Error) {
+            return err;
+        }
+
+        return new Error(err);
+    };
+
+
+
     /**
      *  Reject the service promise with an forbidden status
      * The server understood the request, but is refusing to fulfill it.
@@ -78,19 +117,14 @@ function apiService() {
      * the refusal in the entity. If the server does not wish to make this
      * information available to the client, the status code 404 (Not Found)
      * can be used instead.
-     * @param {String} message
+     * @param {String|Error} err
      */
-    this.forbidden = function(message) {
+    this.forbidden = function(err) {
         service.httpstatus = 403;
         service.outcome.success = false;
+        service.addAlert('danger', err);
 
-        if (typeof message === "object" && message.message) {
-            message = message.message;
-        }
-
-        service.outcome.alert.push({ type:'danger' , message: message});
-
-        service.deferred.reject(new Error(message));
+        service.deferred.reject(service.getError(err));
     };
 
 
@@ -101,19 +135,14 @@ function apiService() {
      * For example this error can be caused by a serveur misconfiguration,
      * or a resource exhausted or denied to the server on the host machine.
      *
-     * @param {String} message
+     * @param {String|Error} err
      */
-    this.error = function(message) {
+    this.error = function(err) {
         service.httpstatus = 500;
         service.outcome.success = false;
+        service.addAlert('danger', err);
 
-        if (typeof message === "object" && message.message) {
-            message = message.message;
-        }
-
-        service.outcome.alert.push({ type:'danger' , message: message});
-
-        service.deferred.reject(new Error(message));
+        service.deferred.reject(service.getError(err));
     };
 
 
@@ -121,30 +150,26 @@ function apiService() {
      * Ouput a 404 error
      * with an outcome message
      *
-     * @param {String} message
+     * @param {String|Error} err
      */
-    this.notFound = function(message) {
-         service.httpstatus = 404;
-         service.outcome.success = false;
+    this.notFound = function(err) {
+        service.httpstatus = 404;
+        service.outcome.success = false;
 
-         if (typeof message === "object" && message.message) {
-             message = message.message;
-         }
+        service.addAlert('danger', err);
 
-         service.outcome.alert.push({ type:'danger' , message: message});
-
-         service.deferred.reject(new Error(message));
+        service.deferred.reject(service.getError(err));
     };
+
 
     /**
      * Set a success message into outcome
      * @param {String} message
      */
     this.success = function(message) {
-        service.outcome.alert.push({
-            type: 'success',
-            message: message
-        });
+
+        service.addAlert('success', message);
+
     };
 
 
