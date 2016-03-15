@@ -80,8 +80,9 @@ function apiService() {
         var alert = { type: type };
 
         if (err instanceof Error) {
-            alert = err;
-            alert.type = type;
+            alert.message = err.name+' : '+err.message;
+            alert.stack = err.stack;
+
         } else if (typeof err === 'string') {
             alert.message = err;
         } else {
