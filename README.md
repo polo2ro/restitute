@@ -214,6 +214,10 @@ listController.prototype = new ctrlFactory.list();
 
 ```
 
+In the default behaviour, the empty parameters are ignored only in the list controller. To override that, the ignoreEmptyParams property 
+can be set to false on the controller object. This propoerty is set to false by default on all other controller base objects (get, create, update, delete).
+
+
 restitute.controller.get
 ------------------------
 
