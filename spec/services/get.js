@@ -16,7 +16,8 @@ exports = module.exports = function(services, app) {
         service.deferred.resolve({
             name: 'TEST',
             readonly: params.readonly || null,
-            id: params.id || null
+            id: params.id || null,
+            empty: params.empty
         });
 
         return service.deferred.promise;

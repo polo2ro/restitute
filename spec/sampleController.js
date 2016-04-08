@@ -15,6 +15,19 @@ function listTestController() {
 listTestController.prototype = new restitute.controller.list();
 
 
+function listTestWithEmptyController() {
+
+    restitute.controller.list.call(this, '/rest/listTestWithEmptyController');
+
+    this.ignoreEmptyParams = false;
+    this.controllerAction = function() {
+        return this.jsonService(this.service('list'));
+    };
+}
+listTestWithEmptyController.prototype = new restitute.controller.list();
+
+
+
 
 function getTestController() {
 
@@ -130,6 +143,7 @@ updateParamTestController.prototype = new restitute.controller.update();
 
 exports = module.exports = {
     list: listTestController,
+    listEmpty: listTestWithEmptyController,
     get: getTestController,
     delete: deleteTestController,
     create: createTestController,

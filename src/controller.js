@@ -21,8 +21,20 @@ function restController(method, path) {
 
     /**
      * Parameters given to service (cannot be overloaded with query params)
+     * @var {Object}
      */
     this.forcedParameters = {};
+
+    /**
+     * Ignore empty parameter in request if set to true
+     * This can be usefull for search parameters given to a REST service, if empty string parmeters
+     * are ignored, the associated service will not have to test this bebore doing the query
+     * Forced parameters are not subject to this rule
+     *
+     * @var {Boolean}
+     */
+    this.ignoreEmptyParams = false;
+
 
     var ctrl = this;
 
@@ -97,7 +109,22 @@ function restController(method, path) {
     this.getServiceParameters = function(request) {
 
         var name;
-        var params = request.query || {};
+        var params = {};
+
+
+        if (request.query) {
+            for(name in request.query) {
+                if (request.query.hasOwnProperty(name)) {
+
+                    if (ctrl.ignoreEmptyParams && '' === request.query[name]) {
+                        continue;
+                    }
+
+                    params[name] = request.query[name];
+                }
+            }
+        }
+
 
         if (request.params) {
 
@@ -105,6 +132,11 @@ function restController(method, path) {
 
             for(name in request.params) {
                 if (request.params.hasOwnProperty(name)) {
+
+                    if (ctrl.ignoreEmptyParams && '' === request.params[name]) {
+                        continue;
+                    }
+
                     params[name] = request.params[name];
                 }
             }
@@ -116,6 +148,11 @@ function restController(method, path) {
 
             for(name in request.body) {
                 if (request.body.hasOwnProperty(name)) {
+
+                    if (ctrl.ignoreEmptyParams && '' === request.params[name]) {
+                        continue;
+                    }
+
                     params[name] = request.body[name];
                 }
             }
@@ -218,6 +255,12 @@ function listItemsController(path) {
     restController.call(this, 'get', path);
 
     var ctrl = this;
+
+    /**
+     * Ignore empty by default on list controller
+     * because parameters are most likly for search
+     */
+    ctrl.ignoreEmptyParams = true;
 
     /**
      * Method to paginate a mongoose query

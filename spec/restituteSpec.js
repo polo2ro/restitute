@@ -46,7 +46,7 @@ describe('restitute', function RestituteTestSuite() {
 
     function retrieveTest(path, next)
     {
-        http.get('http://localhost:3000'+path+'?readonly=2&modifiable=1', function(response) {
+        http.get('http://localhost:3000'+path+'?readonly=2&modifiable=1&empty=', function(response) {
 			expect(response.statusCode).toBe(200);
 
             var output = '';
@@ -146,6 +146,16 @@ describe('restitute', function RestituteTestSuite() {
             expect(result.length).toBe(1);
             expect(result[0].name).toBe('TEST');
             expect(result[0].readonly).toBe('2');
+            expect(result[0].empty).toBeUndefined(); // default ignore empty strings
+            done();
+        });
+	});
+
+
+    it('receive empty value if set in controller', function(done){
+        retrieveTest('/rest/listTestWithEmptyController', function(result) {
+            expect(result.length).toBe(1);
+            expect(result[0].empty).toBe('');
             done();
         });
 	});
@@ -159,6 +169,7 @@ describe('restitute', function RestituteTestSuite() {
             expect(result.name).toBe('TEST');
             expect(result.readonly).toBe('2');
             expect(result.id).toBe('666');
+            expect(result.empty).toBe('');
             done();
         });
 	});
