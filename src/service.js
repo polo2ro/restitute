@@ -24,8 +24,16 @@ function apiService() {
     /**
      * HTTP status for service
      * will be used only by REST service
+     * @var {Number}
      */
     this.httpstatus = 200;
+
+    /**
+     * Path used in getService
+     * defined withing the function app.getService
+     * @var {String}
+     */
+    this.path = null;
 
 
     /**
@@ -197,7 +205,26 @@ function apiService() {
     };
 
 
+    /**
+     * output document from the sibling get service and $outcome with a sucess message
+     * @param {String} savedDocument ID
+     * @param {String} message       message for outcome
+     */
+    this.resolveSuccessGet = function(id, message) {
 
+        if (null === service.path) {
+            throw new Error('The path need to be defined in the app.getService function');
+        }
+
+        var path = service.path.split('/');
+        delete path[path.length-1];
+
+        service.app.getService(path.join('/')+'/get')
+        .getResultPromise({ id: id })
+        .then(function(document) {
+            service.resolveSuccess(document, message);
+        });
+    };
 
 
     /**
