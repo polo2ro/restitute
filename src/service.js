@@ -223,7 +223,8 @@ function apiService() {
         .getResultPromise({ id: id })
         .then(function(document) {
             service.resolveSuccess(document, message);
-        });
+        })
+        .catch(service.error);
     };
 
 
