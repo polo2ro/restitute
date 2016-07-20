@@ -206,12 +206,11 @@ function apiService() {
 
 
     /**
-     * output document from the sibling get service and $outcome with a sucess message
-     * @param {String} savedDocument ID
-     * @param {String} message       message for outcome
+     * Get a document using the sibling get service
+     * @param {String} id document ID to get, this will set the 'id' param in the parameters given to GET service
+     * @return {Promise} promise resolve to an object but without the $outcome property
      */
-    this.resolveSuccessGet = function(id, message) {
-
+    this.get = function(id) {
         if (null === service.path) {
             throw new Error('The path need to be defined in the app.getService function');
         }
@@ -219,9 +218,23 @@ function apiService() {
         var path = service.path.split('/');
         delete path[path.length-1];
 
-        service.app.getService(path.join('/')+'/get')
+        return service.app.getService(path.join('/')+'/get')
         .getResultPromise({ id: id })
-        .then(function(document) {
+        .then(function(serviceObject) {
+            delete serviceObject.$outcome;
+            return serviceObject;
+        });
+    };
+
+
+    /**
+     * output document from the sibling get service and $outcome with a sucess message
+     * @param {String} id       savedDocument ID
+     * @param {String} message  message for outcome
+     */
+    this.resolveSuccessGet = function(id, message) {
+
+        this.get(id).then(function(document) {
             service.resolveSuccess(document, message);
         })
         .catch(service.error);

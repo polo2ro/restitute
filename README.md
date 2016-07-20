@@ -79,9 +79,17 @@ the message will be set as a success message in the outcome object.
 Use the get service to get the document and resolve with success 
 the message will be set as a success message in the outcome object.
 This function use the service loader on the app **app.getService()** and the path property set on the current service.
-This can be used to resolve a save or a delete request to ensure result consistency from get/save/delete of the same REST service
+This can be used to resolve a save request to ensure result consistency from get/save of the same REST service
 
+**apiService.get(id)**
 
+ Get an object using the sibling get service.
+ This function use the service loader on the app **app.getService()** and the path property set on the current service.
+ This can be used to resolve a delete request to ensure result consistency from get/delete of the same REST service.
+ 
+ The function return a promise and resolve to an object without the $outcome property.
+ 
+ 
 **apiService.handleMongoError(err)**
 
 this method accept a mongoose error as parameter, the error message will be converted to the outcome object format
