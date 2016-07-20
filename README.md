@@ -4,12 +4,14 @@
 restitute
 =========
 
-a nodejs controller library to create a JSON REST service
-
+a nodejs controller library to create a JSON REST service on a express application
 
 
 Services
 ========
+
+
+
 
 Services should be created one file per service with this kind of folder structure :
 
@@ -25,7 +27,21 @@ Services should be created one file per service with this kind of folder structu
       \_ list.js
       \_ save.js
 
-Where "users" and "articles" are services names. each file contain a class inherrited from one of the base classes
+Where "users" and "articles" are services names. each file contain a class inherrited from one of the base classes.
+
+A service loader is required on the express app
+
+```javascript
+app.getService = function(path) {
+    let apiservice = require('restitute').service;
+    let getService = require('./services/'+path);
+    let service = getService(apiservice, app);
+
+    service.path = path;
+
+    return service;
+};
+```
 
 
 Methods
@@ -57,6 +73,14 @@ resolve the service promise with the outcome object
 
 resolve the service promise with the document parameter in the document property og the outcome object. 
 the message will be set as a success message in the outcome object.
+
+**apiService.resolveSuccessGet(id, message)**
+
+Use the get service to get the document and resolve with success 
+the message will be set as a success message in the outcome object.
+This function use the service loader on the app **app.getService()** and the path property set on the current service.
+This can be used to resolve a save or a delete request to ensure result consistency from get/save/delete of the same REST service
+
 
 **apiService.handleMongoError(err)**
 
