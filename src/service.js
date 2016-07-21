@@ -147,6 +147,11 @@ function apiService() {
      * @param {String|Error} err
      */
     this.error = function(err) {
+
+        if (err.name === 'ValidationError') {
+            return service.handleMongoError(err); // 400
+        }
+
         service.httpstatus = 500;
         service.outcome.success = false;
         service.addAlert('danger', err);
