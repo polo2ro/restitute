@@ -74,14 +74,19 @@ resolve the service promise with the outcome object
 resolve the service promise with the document parameter in the document property og the outcome object. 
 the message will be set as a success message in the outcome object.
 
-**apiService.resolveSuccessGet(id, message)**
+**apiService.resolveSuccessGet(param, message)**
 
 Use the get service to get the document and resolve with success 
 the message will be set as a success message in the outcome object.
 This function use the service loader on the app **app.getService()** and the path property set on the current service.
 This can be used to resolve a save request to ensure result consistency from get/save of the same REST service
 
-**apiService.get(id)**
+
+param: can be an object id or a object with propoerties used by the get service
+
+message: will be added to success message in the $outcome object
+
+**apiService.get(param)**
 
  Get an object using the sibling get service.
  This function use the service loader on the app **app.getService()** and the path property set on the current service.
@@ -89,6 +94,7 @@ This can be used to resolve a save request to ensure result consistency from get
  
  The function return a promise and resolve to an object without the $outcome property.
  
+ param: can be an object id or a object with propoerties used by the get service
  
 **apiService.handleMongoError(err)**
 
