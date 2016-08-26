@@ -177,6 +177,22 @@ function apiService() {
 
 
     /**
+     * Ouput a 410 error
+     * with an outcome message
+     *
+     * @param {String|Error} err
+     */
+    this.gone = function(err) {
+        service.httpstatus = 410;
+        service.outcome.success = false;
+
+        service.addAlert('danger', err);
+
+        service.deferred.reject(service.getError(err));
+    };
+
+
+    /**
      * Set a success message into outcome
      * @param {String} message
      */
