@@ -82,7 +82,7 @@ This function use the service loader on the app **app.getService()** and the pat
 This can be used to resolve a save request to ensure result consistency from get/save of the same REST service
 
 
-param: can be an object id or a object with propoerties used by the get service
+param: can be an object id or a object with properties used by the get service
 
 message: will be added to success message in the $outcome object
 
@@ -94,7 +94,7 @@ message: will be added to success message in the $outcome object
  
  The function return a promise and resolve to an object without the $outcome property.
  
- param: can be an object id or a object with propoerties used by the get service
+ param: can be an object id or a object with properties used by the get service
  
 **apiService.handleMongoError(err)**
 
