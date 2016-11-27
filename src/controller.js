@@ -49,13 +49,14 @@ function restController(method, path) {
      *
      * @return {Promise}
      */
-    this.onRequest = function(req, res) {
+    this.onRequest = function(req, res, next) {
 
         var Q = require('q');
         var deferred = Q.defer();
 
         ctrl.req = req;
         ctrl.res = res;
+        ctrl.next = next;
 
 
         var workflow = require('./workflow');
