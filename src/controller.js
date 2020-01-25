@@ -272,17 +272,15 @@ function listItemsController(path) {
      * @return {Query}
      */
     this.paginate = function(total, query, itemsPerPage) {
-
-
         var paginate = require('node-paginate-anything');
-        var p = paginate(ctrl.req, ctrl.res, total, itemsPerPage || 50);
+        var p = paginate(ctrl.req, ctrl.res, total, itemsPerPage || 50);
 
         if (!p) {
             return query;
         }
 
-        query.limit(p.limit);
         query.skip(p.skip);
+        query.limit(p.limit);
 
         return query;
     };
